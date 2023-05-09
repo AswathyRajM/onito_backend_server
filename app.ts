@@ -9,11 +9,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-// catch 404 and forward to error handler
-app.use(function (req: Request, res: Response, next: any) {
-  next(createError(404));
-});
-
 const allowedMethods = ['GET', 'POST', 'PUT', 'PATCH'];
 app.use((req, res, next) => {
   if (!allowedMethods.includes(req.method))

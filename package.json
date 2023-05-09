@@ -4,7 +4,7 @@
   "description": "Onito technologies assignement for nodejs developer",
   "main": "index.js",
   "scripts": {
-    "start:dev": "npx nodemon",
+    "start:dev": "nodemon --watch './**/*.ts' --exec 'ts-node' index.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "aswathyraj767@gmail.com",
