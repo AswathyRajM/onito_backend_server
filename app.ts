@@ -1,5 +1,4 @@
-var createError = require('http-errors');
-import express, { Request, Response } from 'express';
+import express from 'express';
 var path = require('path');
 import applyRoutes from './routes';
 require('dotenv').config();
