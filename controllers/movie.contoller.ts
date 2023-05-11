@@ -48,7 +48,6 @@ class MovieController {
   };
 
   static getTopRatedMovies = (req: any, res: any) => {
-    const id = req.params.id;
     Rating.findAll({
       where: {
         averageRating: {
@@ -59,12 +58,12 @@ class MovieController {
       attributes: [
         'tconst',
         'averageRating',
-        [Sequelize.col('movie.primaryTitle'), 'primaryTitle'],
-        [Sequelize.col('movie.genres'), 'genres'],
+        [Sequelize.col('movies.primaryTitle'), 'primaryTitle'],
+        [Sequelize.col('movies.genres'), 'genres'],
       ],
       include: {
         model: Movie,
-        as: 'movie',
+        as: 'movies',
         attributes: [],
       },
       raw: true,
@@ -72,6 +71,100 @@ class MovieController {
       .then((data: any) => {
         if (data) {
           res.send(data);
+        }
+      })
+      .catch((err: any) => {
+        res.status(500).send({
+          resultCode: 0,
+          message: err.message || 'Server Error',
+          error_code: '500',
+        });
+      });
+  };
+
+  static genreMoviesWithSubtotals = (req: any, res: any) => {
+    // Movie.findAll({
+    //   group: ['genres'],
+    // attributes: [
+    //   'primaryTitle',
+    //   'genres',
+    //   // [Sequelize.fn('sum', Sequelize.col('ratings.numVotes')), 'TOTAL'],
+    //   // [Sequelize.col('ratings.numVotes'), 'numVotes'],
+    // ],
+    // include: {
+    //   model: Rating,
+    //   as: 'ratings',
+    //   attributes: ['tconst'],
+    // },
+    //   raw: true,
+    // })
+    // Movie.findAll({
+    //   group: ['movies.genres'],
+    //   attributes: [
+    //     'genres',
+    //     // [Sequelize.fn('count', Sequelize.col('genres')), 'cnt'],
+    //     // [Sequelize.fn('sum', Sequelize.col('ratings.numVotes')), 'TOTAL'],
+    //     // [Sequelize.col('ratings.numVotes'), 'numVotes'],
+    //   ],
+    //   include: {
+    //     model: Rating,
+    //     as: 'ratings',
+    //     attributes: [],
+    //   },
+    //   raw: true,
+    // })
+
+    Rating.findAll({
+      group: ['movies.genres'],
+      // attributes: [
+      //   'numVotes',
+      //   // [Sequelize.fn('sum', Sequelize.col('numVotes')), 'TOTAL'],
+      //   [Sequelize.fn('GROUP_CONCAT', Sequelize.col('movies.genres')), 'TOTAL'],
+      //   [Sequelize.col('movies.genres'), 'genres'],
+      //   // [Sequelize.col('movies.primaryTitle'), 'primaryTitle'],
+      // ],
+      attributes: [
+        [
+          Sequelize.fn(
+            'JSON_ARRAYAGG',
+            Sequelize.literal(
+              'JSON_OBJECT("tconst", movies.tconst, "primaryTitle",movies.primaryTitle,"genres", movies.genres)'
+            )
+          ),
+          'movie',
+        ],
+      ],
+      include: {
+        model: Movie,
+        as: 'movies',
+        attributes: [],
+      },
+      raw: true,
+    })
+      .then((data: any) => {
+        if (data) {
+          res.send(data);
+        }
+      })
+      .catch((err: any) => {
+        res.status(500).send({
+          resultCode: 0,
+          message: err.message || 'Server Error',
+          error_code: '500',
+        });
+      });
+  };
+  static updateRuntimeMinutes = async (req: any, res: any) => {
+    const updateValues = {
+      runtimeMinutes: Sequelize.literal(
+        "CASE WHEN genres = 'Documentary' THEN 15 WHEN genres = 'Animation' THEN 30 ELSE 45 END"
+      ),
+    };
+    const whereClause = {};
+    Movie.update(updateValues, { where: whereClause })
+      .then((data: any) => {
+        if (data) {
+          res.send('success');
         }
       })
       .catch((err: any) => {

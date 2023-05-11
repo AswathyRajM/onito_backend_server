@@ -9,5 +9,10 @@ router.get(
 );
 router.post('/new-movie', movieController.addMovie);
 router.get('/top-rated-movies', movieController.getTopRatedMovies);
+router.get(
+  '/genre-movies-with-subtotals',
+  movieController.genreMoviesWithSubtotals
+);
+router.post('/update-runtime-minutes', movieController.updateRuntimeMinutes);
 
 export { router };

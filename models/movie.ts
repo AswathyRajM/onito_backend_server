@@ -54,5 +54,11 @@ Movie.init(
   }
 );
 
-Movie.hasMany(Rating, { as: 'ratings' });
-Rating.belongsTo(Movie, { foreignKey: 'tconst' });
+Movie.hasOne(Rating, {
+  as: 'ratings',
+  foreignKey: 'tconst',
+});
+Rating.belongsTo(Movie, {
+  as: 'movies',
+  foreignKey: 'tconst',
+});
