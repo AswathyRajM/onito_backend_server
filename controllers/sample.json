@@ -1,0 +1,51 @@
+[
+  [
+    {
+      "genres": "Action",
+      "primaryTitle": "Boat Leaving the Port",
+      "numVotes": 1440
+    },
+    {
+      "genres": "Action",
+      "primaryTitle": "Cordeliers Square in Lyon",
+      "numVotes": 1118
+    },
+    {
+      "genres": "Action",
+      "primaryTitle": "Fishing for Goldfish",
+      "numVotes": 1036
+    },
+    { "TOTAL": 3588 }
+  ],
+  [
+    {
+      "genres": "Animation",
+      "primaryTitle": "Autour dune cabine",
+      "numVotes": 1020
+    },
+    {
+      "genres": "Animation",
+      "primaryTitle": "Le clown et ses chiens",
+      "numVotes": 257
+    },
+    {
+      "genres": "Animation",
+      "primaryTitle": "Pauvre Pierrot",
+      "numVotes": 1716
+    },
+    { "TOTAL": 2993 }
+  ],
+  [
+    {
+      "genres": "Comedy",
+      "primaryTitle": "A Hard Wash",
+      "numVotes": 49
+    },
+    {
+      "genres": "Comedy",
+      "primaryTitle": "Bataille de neige",
+      "numVotes": 1772
+    },
+    { "TOTAL": 1821 }
+  ]
+]

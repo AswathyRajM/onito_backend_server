@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { Op, Sequelize } from 'sequelize';
 import Movie from '../models/movie';
 import Rating from '../models/ratings';
+import sequelize from '../config/database';
 class MovieController {
   static getLongestDurationMovies = async (req: Request, res: Response) => {
     Movie.findAll({
@@ -83,64 +84,10 @@ class MovieController {
   };
 
   static genreMoviesWithSubtotals = (req: any, res: any) => {
-    // Movie.findAll({
-    //   group: ['genres'],
-    // attributes: [
-    //   'primaryTitle',
-    //   'genres',
-    //   // [Sequelize.fn('sum', Sequelize.col('ratings.numVotes')), 'TOTAL'],
-    //   // [Sequelize.col('ratings.numVotes'), 'numVotes'],
-    // ],
-    // include: {
-    //   model: Rating,
-    //   as: 'ratings',
-    //   attributes: ['tconst'],
-    // },
-    //   raw: true,
-    // })
-    // Movie.findAll({
-    //   group: ['movies.genres'],
-    //   attributes: [
-    //     'genres',
-    //     // [Sequelize.fn('count', Sequelize.col('genres')), 'cnt'],
-    //     // [Sequelize.fn('sum', Sequelize.col('ratings.numVotes')), 'TOTAL'],
-    //     // [Sequelize.col('ratings.numVotes'), 'numVotes'],
-    //   ],
-    //   include: {
-    //     model: Rating,
-    //     as: 'ratings',
-    //     attributes: [],
-    //   },
-    //   raw: true,
-    // })
-
-    Rating.findAll({
-      group: ['movies.genres'],
-      // attributes: [
-      //   'numVotes',
-      //   // [Sequelize.fn('sum', Sequelize.col('numVotes')), 'TOTAL'],
-      //   [Sequelize.fn('GROUP_CONCAT', Sequelize.col('movies.genres')), 'TOTAL'],
-      //   [Sequelize.col('movies.genres'), 'genres'],
-      //   // [Sequelize.col('movies.primaryTitle'), 'primaryTitle'],
-      // ],
-      attributes: [
-        [
-          Sequelize.fn(
-            'JSON_ARRAYAGG',
-            Sequelize.literal(
-              'JSON_OBJECT("tconst", movies.tconst, "primaryTitle",movies.primaryTitle,"genres", movies.genres)'
-            )
-          ),
-          'movie',
-        ],
-      ],
-      include: {
-        model: Movie,
-        as: 'movies',
-        attributes: [],
-      },
-      raw: true,
-    })
+    sequelize
+      .query(
+        "SELECT CASE WHEN GROUPING(m.primaryTitle) = 1 AND GROUPING(m.genres) = 0 THEN null ELSE m.genres END AS `m.genres`,CASE WHEN GROUPING(m.primaryTitle) = 1 AND GROUPING(m.genres) = 0 THEN 'TOTAL' ELSE m.primaryTitle END AS `m.primaryTitle`, SUM(r.numVotes) AS `r.numVotes` FROM movies AS m JOIN ratings AS r ON r.tconst = m.tconst GROUP BY m.genres, m.primaryTitle WITH ROLLUP HAVING GROUPING(m.genres) = 0;"
+      )
       .then((data: any) => {
         if (data) {
           res.send(data);
@@ -154,6 +101,7 @@ class MovieController {
         });
       });
   };
+
   static updateRuntimeMinutes = async (req: any, res: any) => {
     const updateValues = {
       runtimeMinutes: Sequelize.literal(
