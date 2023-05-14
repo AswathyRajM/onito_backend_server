@@ -108,8 +108,7 @@ class MovieController {
         "CASE WHEN genres = 'Documentary' THEN 15 WHEN genres = 'Animation' THEN 30 ELSE 45 END"
       ),
     };
-    const whereClause = {};
-    Movie.update(updateValues, { where: whereClause })
+    Movie.update(updateValues, { where: {} })
       .then((data: any) => {
         if (data) {
           res.send('success');
