@@ -1,8 +1,6 @@
-
-# Movies Server 
+# Movies Server
 
 This repository contains rest apis for movies db
-
 
 ## Environment Variables
 
@@ -25,7 +23,6 @@ Install onito_backend with npm
   npm install onito_backend
   cd onito_backend
 ```
-    
 ## Run Locally
 
 Clone the project
@@ -51,4 +48,3 @@ Start the server
 ```bash
   npm run start:dev
 ```
-
